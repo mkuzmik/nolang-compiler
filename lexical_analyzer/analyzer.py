@@ -1,28 +1,67 @@
-from lexical_analyzer.scanner_automaton import ScannerAutomaton
-from lexical_analyzer.token import Token
+from lexical_analyzer.token import *
 
 
 class Analyzer:
 
-    def __init__(self):
-        self.token_array = []
-        self.current_token_value = ""
-        self.scanner = ScannerAutomaton()
+    def __init__(self, input):
+        self.input = input
+        self.position = 0
+        self.line = 0
+        self.column = 0
 
-    # source_code is an array of string (lines of code)
-    def analyse(self, source_code):
-        for line_number in range(len(source_code)):
-            for column_number in range(len(source_code[line_number])):
-                char = source_code[line_number][column_number]
-                print("Scanning symbol: " + char)
-                if not char.isspace():
-                    self.current_token_value = self.current_token_value + char
-                    self.scanner.push(char)
-                else:
-                    self.flush_token_and_reset_buffer()
-        self.flush_token_and_reset_buffer()
-        return self.token_array
+    def next_token(self):
+        if self.position >= len(self.input):
+            return Token(TokenType.END_OF_INPUT, '', self.line, self.column)
 
-    def flush_token_and_reset_buffer(self):
-        self.token_array.append(Token(self.scanner.get_current_token_type(), self.current_token_value))
-        self.current_token_value = ""
+        char = self.input[self.position]
+
+        if char.isalpha():
+            return self.recognize_identifier()
+
+        if char.isdigit():
+            return self.recognize_number()
+
+        if is_operator(char):
+            return self.recognize_operator()
+
+        if is_parenthesis(char):
+            return self.recognize_parenthesis()
+
+        if char == '\n':
+            self.position += 1
+            self.line += 1
+            self.column = 0
+            return self.next_token()
+
+        return Token(TokenType.UNKNOWN, '', self.line, self.position)
+
+    def recognize_identifier(self):
+        pass
+
+
+    def recognize_number(self):
+        pass
+
+    def recognize_operator(self):
+        pass
+
+    def recognize_parenthesis(self):
+        position = self.position
+        line = self.line
+        column = self.column
+        character = self.input[position]
+
+        self.position += 1
+        self.column += 1
+
+        if character == '(':
+            return Token(TokenType.LEFT_PAR, character, line, column)
+        else:
+            return Token(TokenType.RIGHT_PAR, character, line, column)
+
+
+def is_operator(character):
+    return character in "=+-<>*/"
+
+def is_parenthesis(character):
+    return character in "()"
