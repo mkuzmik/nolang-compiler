@@ -36,20 +36,75 @@ class Analyzer:
         return Token(TokenType.UNKNOWN, '', self.line, self.position)
 
     def recognize_identifier(self):
-        pass
 
+        position = self.position
+        line = self.line
+        column = self.column
+        identifier = ''
+
+        while position < len(self.input):
+            character = self.input[position]
+            if not(character.isalpha() | character.isdigit() | (character == '-')):
+                break
+            identifier += character
+            position += 1
+
+        self.position += len(identifier)
+        self.column += len(identifier)
+
+        return Token(TokenType.IDENTIFIER, identifier, line, column)
 
     def recognize_number(self):
         pass
 
     def recognize_operator(self):
-        pass
+        position = self.position
+        line = self.line
+        column = self.column
+        character = self.input[position]
+        nextchar = ''
+
+        if position + 1 < len(self.input):
+            nextchar = self.input[position + 1]
+
+        self.position += 1
+        self.column += 1
+
+        if character == '+':
+            return Token(TokenType.PLUS, character, line, column)
+
+        if character == '-':
+            return Token(TokenType.MINUS, character, line, column)
+
+        if character == '*':
+            return Token(TokenType.TIMES, character, line, column)
+
+        if character == '/':
+            return Token(TokenType.DIV, character, line, column)
+
+        if character == '=':
+            if nextchar == '=':
+                return Token(TokenType.EQUAL, character + nextchar, line + 1, column + 1)
+            else:
+                return Token(TokenType.ASSIGN, character, line, column)
+
+        if character == '>':
+            if nextchar == '=':
+                return Token(TokenType.GREATER_EQUAL, character + nextchar, line + 1, column + 1)
+            else:
+                return Token(TokenType.GREATER, character, line, column)
+
+        if character == '<':
+            if nextchar == '=':
+                return Token(TokenType.LESS_EQUAL, character + nextchar, line + 1, column + 1)
+            else:
+                return Token(TokenType.LESS, character, line, column)
 
     def recognize_parenthesis(self):
         position = self.position
         line = self.line
         column = self.column
-        character = self.input[position]
+        character = self.input[self.position]
 
         self.position += 1
         self.column += 1
@@ -62,6 +117,7 @@ class Analyzer:
 
 def is_operator(character):
     return character in "=+-<>*/"
+
 
 def is_parenthesis(character):
     return character in "()"
