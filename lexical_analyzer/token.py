@@ -19,6 +19,8 @@ class Token:
 class TokenType(Enum):
     IDENTIFIER = 'identifier'
 
+    NUMBER = 'number'
+
     PLUS = 'plus'
     MINUS = 'minus'
     TIMES = 'times'

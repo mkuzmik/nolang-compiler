@@ -44,7 +44,7 @@ class Analyzer:
 
         while position < len(self.input):
             character = self.input[position]
-            if not(character.isalpha() | character.isdigit() | (character == '-')):
+            if not(character.isalpha() | character.isdigit() | (character == '_')):
                 break
             identifier += character
             position += 1
@@ -55,7 +55,44 @@ class Analyzer:
         return Token(TokenType.IDENTIFIER, identifier, line, column)
 
     def recognize_number(self):
-        pass
+
+        position = self.position
+        line = self.line
+        column = self.column
+        number = ''
+        isFloat = False
+
+        character = self.input[position]
+
+        position +=1
+        column +=1
+
+        if character.isdigit():
+            if (position < len(self.input)) & (character == '0'):
+                if self.input[position] == '.':
+                    number += '0.'
+                    isFloat = True
+                    position += 1
+                    column += 1
+                else:
+                    return Token(TokenType.NUMBER, character, line, column)
+            else:
+                number += character
+
+        while position < len(self.input):
+            character = self.input[position]
+            if not character.isdigit():
+                if (character == '.') & (isFloat == False):
+                    isFloat = True
+                else:
+                    break
+            number += character
+            position += 1
+
+        self.position += len(number)
+        self.column += len(number)
+
+        return Token(TokenType.NUMBER, number, line, column)
 
     def recognize_operator(self):
         position = self.position
