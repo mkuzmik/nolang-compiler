@@ -151,6 +151,12 @@ class Analyzer:
         else:
             return Token(TokenType.RIGHT_PAR, character, line, column)
 
+    def gather_tokens(self):
+        token = self.next_token()
+        if token.token_type == TokenType.END_OF_INPUT:
+            return [token]
+        return [token] + self.gather_tokens()
+
 
 def is_operator(character):
     return character in "=+-<>*/"
