@@ -183,10 +183,7 @@ class Analyzer:
         self.position += 1
         self.column += 1
 
-        if character == '(':
-            return Token(TokenType.LEFT_PAR, character, line, column)
-        else:
-            return Token(TokenType.RIGHT_PAR, character, line, column)
+        return Token(TokenType.PAREN, character, line, column)
 
     def recognize_brackets(self):
         line = self.line
@@ -196,10 +193,7 @@ class Analyzer:
         self.position += 1
         self.column += 1
 
-        if character == '{':
-            return Token(TokenType.LEFT_BRAC, character, line, column)
-        else:
-            return Token(TokenType.RIGHT_BRAC, character, line, column)
+        return Token(TokenType.BRACKET, character, line, column)
 
     def gather_tokens(self):
         token = self.next_token()

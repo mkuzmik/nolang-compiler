@@ -35,15 +35,12 @@ class TokenType(Enum):
 
     ASSIGN = 'assign'
 
-    LEFT_PAR = 'left parenthesis'
-    RIGHT_PAR = 'right parenthesis'
+    PAREN = 'parenthesis'
+    BRACKET = 'bracket'
 
     END_OF_INPUT = 'end of input'
 
     UNKNOWN = 'unknown token'
-
-    LEFT_BRAC = 'left bracket'
-    RIGHT_BRAC = 'right bracket'
 
     FUNCTION = 'function'
     PRINT = 'print'
