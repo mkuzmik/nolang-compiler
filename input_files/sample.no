@@ -1,0 +1,10 @@
+{
+    function sample_function() {
+        var x = 1;
+        return x;
+    }
+
+    var str = 'string variable';
+
+    print sample_function();
+}

@@ -20,6 +20,7 @@ class TokenType(Enum):
     IDENTIFIER = 'identifier'
 
     NUMBER = 'number'
+    STRING = 'string'
 
     PLUS = 'plus'
     MINUS = 'minus'
@@ -40,3 +41,13 @@ class TokenType(Enum):
     END_OF_INPUT = 'end of input'
 
     UNKNOWN = 'unknown token'
+
+    LEFT_BRAC = 'left bracket'
+    RIGHT_BRAC = 'right bracket'
+
+    FUNCTION = 'function'
+    PRINT = 'print'
+    VARIABLE = 'variable'
+    WHILE = 'while loop'
+
+    END_OF_STATEMENT = 'end of statement'

@@ -1,7 +1,7 @@
 from lexical_analyzer.analyzer import Analyzer
-from lexical_analyzer.token import TokenType
 
-FILENAME = "foo"
+
+FILENAME = "sample.no"
 FILEDIR = "../input_files/"
 
 with open(FILEDIR + FILENAME) as source:

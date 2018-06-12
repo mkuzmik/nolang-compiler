@@ -1,4 +1,4 @@
-from lexical_analyzer.token import *
+from lexical_analyzer.tokenz import *
 
 
 class Analyzer:
@@ -27,13 +27,39 @@ class Analyzer:
         if is_parenthesis(char):
             return self.recognize_parenthesis()
 
-        if char == '\n':
+        if is_bracket(char):
+            return self.recognize_brackets()
+
+        if char == "'":
+            return self.recognize_string()
+
+        if (char == '\n'):
             self.position += 1
             self.line += 1
             self.column = 0
             return self.next_token()
 
+        if (char == ' '):
+            self.position += 1
+            self.column += 1
+            return self.next_token()
+
         return Token(TokenType.UNKNOWN, '', self.line, self.position)
+
+    def recognize_string(self):
+        position = self.position + 1
+        line = self.line
+        column = self.column + 1
+        string = ''
+
+        while self.input[position] != "'":
+            string += self.input[position]
+            position += 1
+
+        self.position += len(string) + 2
+        self.column += len(string) + 2
+
+        return Token(TokenType.STRING, string, line, column)
 
     def recognize_identifier(self):
 
@@ -51,6 +77,15 @@ class Analyzer:
 
         self.position += len(identifier)
         self.column += len(identifier)
+
+        if (identifier == 'function'):
+            return Token(TokenType.FUNCTION, identifier, line, column)
+
+        if (identifier == 'var'):
+            return Token(TokenType.VARIABLE, identifier, line, column)
+
+        if (identifier == 'while'):
+            return Token(TokenType.WHILE, identifier, line, column)
 
         return Token(TokenType.IDENTIFIER, identifier, line, column)
 
@@ -119,6 +154,9 @@ class Analyzer:
         if character == '/':
             return Token(TokenType.DIV, character, line, column)
 
+        if character == ';':
+            return Token(TokenType.END_OF_STATEMENT, character, line, column)
+
         if character == '=':
             if nextchar == '=':
                 return Token(TokenType.EQUAL, character + nextchar, line + 1, column + 1)
@@ -138,7 +176,6 @@ class Analyzer:
                 return Token(TokenType.LESS, character, line, column)
 
     def recognize_parenthesis(self):
-        position = self.position
         line = self.line
         column = self.column
         character = self.input[self.position]
@@ -151,6 +188,19 @@ class Analyzer:
         else:
             return Token(TokenType.RIGHT_PAR, character, line, column)
 
+    def recognize_brackets(self):
+        line = self.line
+        column = self.column
+        character = self.input[self.position]
+
+        self.position += 1
+        self.column += 1
+
+        if character == '{':
+            return Token(TokenType.LEFT_BRAC, character, line, column)
+        else:
+            return Token(TokenType.RIGHT_BRAC, character, line, column)
+
     def gather_tokens(self):
         token = self.next_token()
         if token.token_type == TokenType.END_OF_INPUT:
@@ -159,8 +209,12 @@ class Analyzer:
 
 
 def is_operator(character):
-    return character in "=+-<>*/"
+    return character in "=+-<>*/;"
 
 
 def is_parenthesis(character):
     return character in "()"
+
+
+def is_bracket(character):
+    return character in "{}"
