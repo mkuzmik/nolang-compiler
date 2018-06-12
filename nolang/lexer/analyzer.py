@@ -1,4 +1,4 @@
-from lexical_analyzer.tokenz import *
+from nolang.lexer.tokenz import *
 
 
 class Analyzer:
