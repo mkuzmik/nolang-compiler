@@ -110,6 +110,8 @@ class Analyzer:
                     position += 1
                     column += 1
                 else:
+                    self.position += 1
+                    self.column += 1
                     return Token(TokenType.NUMBER, character, line, column)
             else:
                 number += character
@@ -142,38 +144,19 @@ class Analyzer:
         self.position += 1
         self.column += 1
 
-        if character == '+':
-            return Token(TokenType.PLUS, character, line, column)
-
-        if character == '-':
-            return Token(TokenType.MINUS, character, line, column)
-
-        if character == '*':
-            return Token(TokenType.TIMES, character, line, column)
-
-        if character == '/':
-            return Token(TokenType.DIV, character, line, column)
-
-        if character == ';':
-            return Token(TokenType.END_OF_STATEMENT, character, line, column)
-
-        if character == '=':
-            if nextchar == '=':
-                return Token(TokenType.EQUAL, character + nextchar, line + 1, column + 1)
-            else:
+        if is_operator(nextchar):
+            self.position += 2
+            self.column += 2
+            return Token(TokenType.BINARY_OPERATOR, character + nextchar, line + 1, column + 1)
+        else:
+            self.position += 1
+            self.column += 1
+            if (character == '='):
                 return Token(TokenType.ASSIGN, character, line, column)
-
-        if character == '>':
-            if nextchar == '=':
-                return Token(TokenType.GREATER_EQUAL, character + nextchar, line + 1, column + 1)
+            if (character == ';'):
+                return Token(TokenType.END_OF_STATEMENT, character, line, column)
             else:
-                return Token(TokenType.GREATER, character, line, column)
-
-        if character == '<':
-            if nextchar == '=':
-                return Token(TokenType.LESS_EQUAL, character + nextchar, line + 1, column + 1)
-            else:
-                return Token(TokenType.LESS, character, line, column)
+                return Token(TokenType.BINARY_OPERATOR, character, line, column)
 
     def recognize_parenthesis(self):
         line = self.line
@@ -197,7 +180,7 @@ class Analyzer:
 
     def gather_tokens(self):
         token = self.next_token()
-        if token.token_type == TokenType.END_OF_INPUT:
+        if token.type == TokenType.END_OF_INPUT:
             return [token]
         return [token] + self.gather_tokens()
 

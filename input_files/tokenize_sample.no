@@ -1,10 +1,16 @@
 {
     function sample_function() {
-        var x = 1;
+        var x=1;
         return x;
     }
 
     var str = 'string variable';
+
+    var y = 0;
+
+    while(y < 0) {
+        y = y + 1;
+    }
 
     print sample_function();
 }
