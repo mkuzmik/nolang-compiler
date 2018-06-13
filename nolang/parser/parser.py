@@ -37,6 +37,10 @@ class Parser:
             self.eat(TokenType.IDENTIFIER)
             return Variable(token.value)
 
+        elif token.type == TokenType.BOOLEAN:
+            self.eat(TokenType.BOOLEAN)
+            return BooleanLiteral(token.value)
+
         elif token.type == TokenType.LPAREN:
             self.eat(TokenType.LPAREN)
             node = self.expr()
@@ -102,8 +106,17 @@ class Parser:
             node = self.print_statement()
         elif self.current_token.type == TokenType.WHILE:
             node = self.while_loop()
+        elif self.current_token.type == TokenType.IF:
+            node = self.if_statement()
         else:
             node = self.empty()
+        return node
+
+    def if_statement(self):
+        self.eat(TokenType.IF)
+        condition_exp = self.condition()
+        body = self.compound()
+        node = IfStatement(condition_exp, body)
         return node
 
     def while_loop(self):

@@ -7,11 +7,20 @@ class WhileLoop:
         self.condition = condition
         self.body = body
 
+class IfStatement:
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
 class NumberLiteral:
     def __init__(self, value):
         self.value = value
 
 class StringLiteral:
+    def __init__(self, value):
+        self.value = value
+
+class BooleanLiteral:
     def __init__(self, value):
         self.value = value
 

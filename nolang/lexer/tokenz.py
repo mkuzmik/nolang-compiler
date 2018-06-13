@@ -21,6 +21,7 @@ class TokenType(Enum):
 
     NUMBER = 'number'
     STRING = 'string'
+    BOOLEAN = 'boolean'
 
     BINARY_OPERATOR = 'binary operator'
 
@@ -40,5 +41,6 @@ class TokenType(Enum):
     PRINT = 'print'
     VARIABLE = 'variable'
     WHILE = 'while loop'
+    IF = 'if statement'
 
     END_OF_STATEMENT = 'end of statement'

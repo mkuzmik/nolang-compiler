@@ -90,6 +90,15 @@ class Analyzer:
         if (identifier == 'print'):
             return Token(TokenType.PRINT, identifier, line, column)
 
+        if (identifier == 'if'):
+            return Token(TokenType.IF, identifier, line, column)
+
+        if (identifier == 'true'):
+            return Token(TokenType.BOOLEAN, identifier, line, column)
+
+        if (identifier == 'false'):
+            return Token(TokenType.BOOLEAN, identifier, line, column)
+
         return Token(TokenType.IDENTIFIER, identifier, line, column)
 
     def recognize_number(self):
