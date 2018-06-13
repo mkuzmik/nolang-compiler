@@ -82,9 +82,8 @@ class Parser:
     def statement_seq(self):
         node = self.statement()
         res = [node]
-        while self.current_token.type != TokenType.RBRACKET:
-            if (self.current_token.type == TokenType.END_OF_STATEMENT):
-                self.eat(TokenType.END_OF_STATEMENT)
+        while self.current_token.type == TokenType.END_OF_STATEMENT:
+            self.eat(TokenType.END_OF_STATEMENT)
             res.append(self.statement())
 
         if self.current_token.type == TokenType.IDENTIFIER:
