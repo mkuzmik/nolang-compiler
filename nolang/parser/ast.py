@@ -35,5 +35,5 @@ class Declaration:
 class BinaryOperation:
     def __init__(self, operation, expression1, expression2):
         self.operation = operation
-        self.expression1 = expression1
-        self.expression2 = expression2
+        self.left = expression1
+        self.right = expression2

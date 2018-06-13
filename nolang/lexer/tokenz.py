@@ -26,8 +26,11 @@ class TokenType(Enum):
 
     ASSIGN = 'assign'
 
-    PAREN = 'parenthesis'
-    BRACKET = 'bracket'
+    LPAREN = 'left parenthesis'
+    RPAREN = 'right parenthesis'
+
+    LBRACKET = 'left bracket'
+    RBRACKET = 'rightbracket'
 
     END_OF_INPUT = 'end of input'
 
