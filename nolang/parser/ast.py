@@ -2,14 +2,6 @@ class Compound:
     def __init__(self):
         self.children = []
 
-class StatementSequence:
-    def __init__(self):
-        self.statements = []
-
-    def add(self, statement):
-        if (statement != None):
-            self.statements.append(statement)
-
 class WhileLoop:
     def __init__(self, condition, body):
         self.condition = condition
@@ -42,6 +34,16 @@ class BinaryOperation:
         self.operation = operation
         self.left = expression1
         self.right = expression2
+
+class Condition:
+    def __init__(self, cond, expression1, expression2):
+        self.condition = cond
+        self.left = expression1
+        self.right = expression2
+
+class PrintStatement:
+    def __init__(self, exp):
+        self.argument = exp
 
 class Empty:
     pass

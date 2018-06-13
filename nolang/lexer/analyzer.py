@@ -87,6 +87,9 @@ class Analyzer:
         if (identifier == 'while'):
             return Token(TokenType.WHILE, identifier, line, column)
 
+        if (identifier == 'print'):
+            return Token(TokenType.PRINT, identifier, line, column)
+
         return Token(TokenType.IDENTIFIER, identifier, line, column)
 
     def recognize_number(self):
@@ -140,9 +143,6 @@ class Analyzer:
 
         if position + 1 < len(self.input):
             nextchar = self.input[position + 1]
-
-        self.position += 1
-        self.column += 1
 
         if is_operator(nextchar):
             self.position += 2

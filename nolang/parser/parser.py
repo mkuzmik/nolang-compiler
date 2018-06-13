@@ -23,7 +23,6 @@ class Parser:
             self.error()
 
     def factor(self):
-        """factor : INTEGER | LPAREN expr RPAREN"""
         token = self.current_token
 
         if token.type == TokenType.NUMBER:
@@ -45,7 +44,6 @@ class Parser:
             return node
 
     def term(self):
-        """term : factor ((MUL | DIV) factor)*"""
         node = self.factor()
 
         while self.current_token.value in ('*', '/'):
@@ -57,11 +55,6 @@ class Parser:
         return node
 
     def expr(self):
-        """
-        expr   : term ((PLUS | MINUS) term)*
-        term   : factor ((MUL | DIV) factor)*
-        factor : INTEGER | LPAREN expr RPAREN
-        """
         node = self.term()
 
         while self.current_token.value in ('+', '-'):
@@ -89,8 +82,9 @@ class Parser:
     def statement_seq(self):
         node = self.statement()
         res = [node]
-        while self.current_token.type == TokenType.END_OF_STATEMENT:
-            self.eat(TokenType.END_OF_STATEMENT)
+        while self.current_token.type != TokenType.RBRACKET:
+            if (self.current_token.type == TokenType.END_OF_STATEMENT):
+                self.eat(TokenType.END_OF_STATEMENT)
             res.append(self.statement())
 
         if self.current_token.type == TokenType.IDENTIFIER:
@@ -105,8 +99,35 @@ class Parser:
             node = self.assignment_statement()
         elif self.current_token.type == TokenType.VARIABLE:
             node = self.declaration_statement()
+        elif self.current_token.type == TokenType.PRINT:
+            node = self.print_statement()
+        elif self.current_token.type == TokenType.WHILE:
+            node = self.while_loop()
         else:
             node = self.empty()
+        return node
+
+    def while_loop(self):
+        self.eat(TokenType.WHILE)
+        condition_exp = self.condition()
+        body = self.compound()
+        node = WhileLoop(condition_exp, body)
+        return node
+
+    def condition(self):
+        self.eat(TokenType.LPAREN)
+        left = self.expr()
+        condition = self.current_token.value
+        self.eat(TokenType.BINARY_OPERATOR)
+        right = self.expr()
+        self.eat(TokenType.RPAREN)
+        node = Condition(condition, left, right)
+        return node
+
+    def print_statement(self):
+        self.eat(TokenType.PRINT)
+        expression = self.expr()
+        node = PrintStatement(expression)
         return node
 
     def assignment_statement(self):
