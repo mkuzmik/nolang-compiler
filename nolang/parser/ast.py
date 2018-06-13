@@ -1,3 +1,7 @@
+class Compound:
+    def __init__(self):
+        self.children = []
+
 class StatementSequence:
     def __init__(self):
         self.statements = []
@@ -23,17 +27,21 @@ class Variable:
     def __init__(self, identifier):
         self.identifier = identifier
 
-class Assignment:
+class Declaration:
     def __init__(self, variable, expression):
         self.variable = variable
         self.expression = expression
 
-class Declaration:
-    def __init__(self, identifier):
-        self.identifier = identifier
+class Assignment:
+    def __init__(self, variable, expression):
+        self.variable = variable
+        self.expression = expression
 
 class BinaryOperation:
     def __init__(self, operation, expression1, expression2):
         self.operation = operation
         self.left = expression1
         self.right = expression2
+
+class Empty:
+    pass
