@@ -26,16 +26,16 @@ class BooleanLiteral:
 
 class Identifier:
     def __init__(self, identifier):
-        self.identifier = identifier
+        self.value = identifier
 
 class Declaration:
     def __init__(self, variable, expression):
-        self.variable = variable
+        self.identifier = variable
         self.expression = expression
 
 class Assignment:
     def __init__(self, variable, expression):
-        self.variable = variable
+        self.identifier = variable
         self.expression = expression
 
 class BinaryOperation:

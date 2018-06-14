@@ -103,7 +103,7 @@ class Parser:
         PrintStatement -> 'print' Expression ';'
         '''
         self.eat(TokenType.PRINT)
-        expression = self.expression()
+        expression = self.assignable()
         self.eat(TokenType.END_OF_STATEMENT)
         node = PrintStatement(expression)
         return node
