@@ -52,7 +52,11 @@ class Parser:
           Statement -> Assignment | VarDeclaration | PrintStatement | WhileLoop | IfStatement | FunctionDefinition | FunctionCall ';' | ReturnStatement
         '''
         if self.current_token.type == TokenType.IDENTIFIER:
-            node = self.assignment()
+            if self.tokens[self.current + 1].type == TokenType.LPAREN:
+                node = self.function_call()
+                self.eat(TokenType.END_OF_STATEMENT)
+            else:
+                node = self.assignment()
         elif self.current_token.type == TokenType.VARIABLE:
             node = self.var_declaration()
         elif self.current_token.type == TokenType.PRINT:
@@ -166,7 +170,7 @@ class Parser:
         self.eat(TokenType.RETURN)
         expression = self.expression()
         self.eat(TokenType.END_OF_STATEMENT)
-        node = PrintStatement(expression)
+        node = ReturnStatement(expression)
         return node
 
     def condition(self):
@@ -222,7 +226,7 @@ class Parser:
 
     def factor(self):
         '''
-        Factor -> number | identifier | '(' Expression ')'
+        Factor -> numberLiteral | identifier | FunctionCall | '(' Expression ')'
         '''
         token = self.current_token
 
@@ -231,8 +235,11 @@ class Parser:
             return NumberLiteral(token.value)
 
         elif token.type == TokenType.IDENTIFIER:
-            self.eat(TokenType.IDENTIFIER)
-            return Identifier(token.value)
+            if self.tokens[self.current + 1].type == TokenType.LPAREN:
+                return self.function_call()
+            else:
+                self.eat(TokenType.IDENTIFIER)
+                return Identifier(token.value)
 
         elif token.type == TokenType.LPAREN:
             self.eat(TokenType.LPAREN)
@@ -244,6 +251,29 @@ class Parser:
             line = self.current_token.line + 1
             column = self.current_token.column + 1
             raise Exception("PARSER ERROR: Unexpected token " + self.current_token.value + " Expected NUMBER or IDENTIFIER at line " + str(line) + " column " + str(column))
+
+    def function_call(self):
+        '''
+        FunctionCall -> identifier '(' ArgumentsList ')'
+        '''
+        identifier = self.current_token
+        self.eat(TokenType.IDENTIFIER)
+        self.eat(TokenType.LPAREN)
+        arguments = self.arguments_list()
+        self.eat(TokenType.RPAREN)
+        return FunctionCall(identifier.value, arguments)
+
+    def arguments_list(self):
+        '''
+        ArgumentsList -> Assignable | Assignable ',' ArgumentsList
+        '''
+        assigns = []
+        while self.current_token.type != TokenType.RPAREN:
+            assigns.append(self.assignable())
+            if self.current_token.type == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+            else:
+                return assigns
 
     def boolean(self):
         token = self.current_token

@@ -6,11 +6,17 @@
 
     function empty() {}
 
+
     var x = 1;
     var y = 20 + 44 * 5;
 
     var s = 'string value';
     var bool_var = true;
+
+    var result = add(1,x+4);
+
+    empty();
+
 
     x = y + 1;
 
