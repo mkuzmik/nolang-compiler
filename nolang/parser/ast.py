@@ -24,7 +24,7 @@ class BooleanLiteral:
     def __init__(self, value):
         self.value = value
 
-class Variable:
+class Identifier:
     def __init__(self, identifier):
         self.identifier = identifier
 
@@ -54,5 +54,5 @@ class PrintStatement:
     def __init__(self, exp):
         self.argument = exp
 
-class Empty:
+class Epsilon:
     pass
