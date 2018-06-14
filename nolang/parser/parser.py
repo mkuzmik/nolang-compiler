@@ -72,10 +72,16 @@ class Parser:
         return node
 
     def program(self):
+        '''
+        Program -> Compound
+        '''
         node = self.compound()
         return node
 
     def compound(self):
+        '''
+        Compound -> '{' Statement '}'
+        '''
         self.eat(TokenType.LBRACKET)
         nodes = self.statement_seq()
         self.eat(TokenType.RBRACKET)
@@ -87,6 +93,9 @@ class Parser:
         return root
 
     def statement_seq(self):
+        '''
+        StatementSeq -> Statement Statement | Epsilon
+        '''
         node = self.statement()
         res = [node]
         while self.current_token.type == TokenType.END_OF_STATEMENT:
@@ -99,12 +108,13 @@ class Parser:
         return res
 
     def statement(self):
-        if self.current_token.type == TokenType.LBRACKET:
-            node = self.compound()
-        elif self.current_token.type == TokenType.IDENTIFIER:
-            node = self.assignment_statement()
+        '''
+        Statement -> Assignment | VarDeclaration | PrintStatement | WhileLoop | IfStatement
+        '''
+        if self.current_token.type == TokenType.IDENTIFIER:
+            node = self.assignment()
         elif self.current_token.type == TokenType.VARIABLE:
-            node = self.declaration_statement()
+            node = self.var_declaration()
         elif self.current_token.type == TokenType.PRINT:
             node = self.print_statement()
         elif self.current_token.type == TokenType.WHILE:
@@ -115,7 +125,40 @@ class Parser:
             node = self.empty()
         return node
 
+    def assignment(self):
+        '''
+        Assignment -> identifier '=' Expression ';'
+        '''
+        variable = self.variable()
+        self.eat(TokenType.ASSIGN)
+        expression = self.expr()
+        node = Assignment(variable, expression)
+        return node
+
+    def var_declaration(self):
+        '''
+        VarDeclaration -> 'var' identifier = ';'
+        '''
+        self.eat(TokenType.VARIABLE)
+        variable = self.variable()
+        self.eat(TokenType.ASSIGN)
+        expression = self.expr()
+        node = Declaration(variable, expression)
+        return node
+
+    def print_statement(self):
+        '''
+        PrintStatement -> 'print' Expression ';'
+        '''
+        self.eat(TokenType.PRINT)
+        expression = self.expr()
+        node = PrintStatement(expression)
+        return node
+
     def if_statement(self):
+        '''
+        IfStatement -> 'if' Condition Compound ';'
+        '''
         self.eat(TokenType.IF)
         condition_exp = self.condition()
         body = self.compound()
@@ -123,6 +166,9 @@ class Parser:
         return node
 
     def while_loop(self):
+        '''
+        WhileLoop -> 'while' Condition Compound ';'
+        '''
         self.eat(TokenType.WHILE)
         condition_exp = self.condition()
         body = self.compound()
@@ -130,6 +176,9 @@ class Parser:
         return node
 
     def condition(self):
+        '''
+        TODO grammar for condition
+        '''
         self.eat(TokenType.LPAREN)
         left = self.expr()
         condition = self.current_token.value
@@ -137,27 +186,6 @@ class Parser:
         right = self.expr()
         self.eat(TokenType.RPAREN)
         node = Condition(condition, left, right)
-        return node
-
-    def print_statement(self):
-        self.eat(TokenType.PRINT)
-        expression = self.expr()
-        node = PrintStatement(expression)
-        return node
-
-    def assignment_statement(self):
-        variable = self.variable()
-        self.eat(TokenType.ASSIGN)
-        expression = self.expr()
-        node = Assignment(variable, expression)
-        return node
-
-    def declaration_statement(self):
-        self.eat(TokenType.VARIABLE)
-        variable = self.variable()
-        self.eat(TokenType.ASSIGN)
-        expression = self.expr()
-        node = Declaration(variable, expression)
         return node
 
     def variable(self):
