@@ -24,10 +24,10 @@ class Parser:
 
     def compound(self):
         '''
-        Compound -> '{' Statement '}'
+        Compound -> '{' StatementList '}'
         '''
         self.eat(TokenType.LBRACKET)
-        nodes = self.statement_seq()
+        nodes = self.statement_list()
         self.eat(TokenType.RBRACKET)
 
         root = Compound()
@@ -36,20 +36,16 @@ class Parser:
 
         return root
 
-    def statement_seq(self):
+    def statement_list(self):
         '''
-        StatementSeq -> Statement Statement | Epsilon
+        StatementList -> Statement Statement | Epsilon
         '''
-        node = self.statement()
-        res = [node]
-        while self.current_token.type == TokenType.END_OF_STATEMENT:
-            self.eat(TokenType.END_OF_STATEMENT)
-            res.append(self.statement())
+        statement_list = []
+        while self.current_token.type != TokenType.RBRACKET:
+            node = self.statement()
+            statement_list.append(node)
 
-        if self.current_token.type == TokenType.IDENTIFIER:
-            self.error()
-
-        return res
+        return statement_list
 
     def statement(self):
         '''
@@ -66,7 +62,9 @@ class Parser:
         elif self.current_token.type == TokenType.IF:
             node = self.if_statement()
         else:
-            node = self.epsilon()
+            line = self.current_token.line + 1
+            column = self.current_token.column + 1
+            raise Exception("PARSER ERROR: Unexpected token " + self.current_token.value + " Expected STATEMENT at line " + str(line) + " column " + str(column))
         return node
 
     def assignment(self):
@@ -76,6 +74,7 @@ class Parser:
         variable = self.identifier()
         self.eat(TokenType.ASSIGN)
         assignable = self.assignable()
+        self.eat(TokenType.END_OF_STATEMENT)
         node = Assignment(variable, assignable)
         return node
 
@@ -87,6 +86,7 @@ class Parser:
         variable = self.identifier()
         self.eat(TokenType.ASSIGN)
         assignable = self.assignable()
+        self.eat(TokenType.END_OF_STATEMENT)
         node = Declaration(variable, assignable)
         return node
 
@@ -96,12 +96,13 @@ class Parser:
         '''
         self.eat(TokenType.PRINT)
         expression = self.expression()
+        self.eat(TokenType.END_OF_STATEMENT)
         node = PrintStatement(expression)
         return node
 
     def if_statement(self):
         '''
-        IfStatement -> 'if' Condition Compound ';'
+        IfStatement -> 'if' Condition Compound
         '''
         self.eat(TokenType.IF)
         condition_exp = self.condition()
@@ -111,7 +112,7 @@ class Parser:
 
     def while_loop(self):
         '''
-        WhileLoop -> 'while' Condition Compound ';'
+        WhileLoop -> 'while' Condition Compound
         '''
         self.eat(TokenType.WHILE)
         condition_exp = self.condition()
@@ -193,7 +194,7 @@ class Parser:
         else:
             line = self.current_token.line + 1
             column = self.current_token.column + 1
-            raise Exception("PARSER ERROR: Unexpected token " + self.current_token.value + " Expected number or identifier at line " + str(line) + " column " + str(column))
+            raise Exception("PARSER ERROR: Unexpected token " + self.current_token.value + " Expected NUMBER or IDENTIFIER at line " + str(line) + " column " + str(column))
 
     def boolean(self):
         token = self.current_token
