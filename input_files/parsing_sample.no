@@ -1,17 +1,30 @@
 {
+
+    function add(a,b) {
+        return a + b;
+    }
+
+    function empty() {}
+
+
     var x = 1;
-    var y = 20 + 44 * x;
+    var y = 20 + 44 * 5;
 
     var s = 'string value';
     var bool_var = true;
+
+    var result = add(1,x+4);
+
+    empty();
+
 
     x = y + 1;
 
     while(x<4) {
         if (x > 1) {
             x = x + 1;
-        };
-    };
+        }
+    }
 
     print y + 5;
 }

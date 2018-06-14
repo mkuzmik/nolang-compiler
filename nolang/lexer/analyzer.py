@@ -44,7 +44,7 @@ class Analyzer:
             self.column += 1
             return self.next_token()
 
-        return Token(TokenType.UNKNOWN, '', self.line, self.position)
+        raise Exception("LEXER ERROR: Unrecognized token at line " + str(self.line + 1) + " ,column: " + str(self.column + 1))
 
     def recognize_string(self):
         position = self.position + 1
@@ -92,6 +92,9 @@ class Analyzer:
 
         if (identifier == 'if'):
             return Token(TokenType.IF, identifier, line, column)
+
+        if (identifier == 'return'):
+            return Token(TokenType.RETURN, identifier, line, column)
 
         if (identifier == 'true'):
             return Token(TokenType.BOOLEAN, identifier, line, column)
@@ -164,6 +167,8 @@ class Analyzer:
                 return Token(TokenType.ASSIGN, character, line, column)
             if (character == ';'):
                 return Token(TokenType.END_OF_STATEMENT, character, line, column)
+            if (character == ','):
+                return Token(TokenType.COMMA, character, line, column)
             else:
                 return Token(TokenType.BINARY_OPERATOR, character, line, column)
 
@@ -202,7 +207,7 @@ class Analyzer:
 
 
 def is_operator(character):
-    return character in "=+-<>*/;"
+    return character in "=+-<>*/;,"
 
 
 def is_parenthesis(character):
