@@ -49,7 +49,7 @@ class Parser:
 
     def statement(self):
         '''
-        Statement -> Assignment | VarDeclaration | PrintStatement | WhileLoop | IfStatement
+          Statement -> Assignment | VarDeclaration | PrintStatement | WhileLoop | IfStatement | FunctionDefinition | FunctionCall ';' | ReturnStatement
         '''
         if self.current_token.type == TokenType.IDENTIFIER:
             node = self.assignment()
@@ -61,6 +61,10 @@ class Parser:
             node = self.while_loop()
         elif self.current_token.type == TokenType.IF:
             node = self.if_statement()
+        elif self.current_token.type == TokenType.FUNCTION:
+            node = self.function_definition()
+        elif self.current_token.type == TokenType.RETURN:
+            node = self.return_statement()
         else:
             line = self.current_token.line + 1
             column = self.current_token.column + 1
@@ -118,6 +122,51 @@ class Parser:
         condition_exp = self.condition()
         body = self.compound()
         node = WhileLoop(condition_exp, body)
+        return node
+
+    def function_definition(self):
+        '''
+        FunctionDefinition -> 'function' identifier ArgumentsList Compound ';'
+        '''
+        self.eat(TokenType.FUNCTION)
+        identifier = self.identifier()
+        arguments = self.identifiers()
+        body = self.compound()
+        node = FunctionDefinition(identifier, arguments, body)
+        return node
+
+    def identifiers(self):
+        '''
+        Identifiers -> '(' IdentifierList ')'
+        '''
+        self.eat(TokenType.LPAREN)
+        idents = Identifiers()
+        idents.children = self.identifier_list()
+        self.eat(TokenType.RPAREN)
+        return idents
+
+    def identifier_list(self):
+        '''
+        IdentifiersList -> identifier | identifier ',' IdentifierList
+        '''
+        identifiers = []
+        while self.current_token.type == TokenType.IDENTIFIER:
+            token = self.current_token
+            self.eat(TokenType.IDENTIFIER)
+            identifiers.append(Identifier(token.value))
+            if self.current_token.type == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+            else:
+                return identifiers
+
+    def return_statement(self):
+        '''
+        ReturnStatement-> 'return' Expression ';'
+        '''
+        self.eat(TokenType.RETURN)
+        expression = self.expression()
+        self.eat(TokenType.END_OF_STATEMENT)
+        node = PrintStatement(expression)
         return node
 
     def condition(self):
@@ -226,8 +275,8 @@ class Parser:
         return self.current_token
 
     def error(self, expected_token_type):
-        line = self.current_token.line
-        column = self.current_token.line
+        line = self.current_token.line + 1
+        column = self.current_token.line + 1
         raise Exception("PARSER ERROR: Expected: " + str(expected_token_type) + ", but found: " + str(self.current_token.value) + " at line " + str(line) + " column " + str(column))
 
 

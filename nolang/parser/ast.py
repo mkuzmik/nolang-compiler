@@ -54,5 +54,24 @@ class PrintStatement:
     def __init__(self, exp):
         self.argument = exp
 
+class ReturnStatement:
+    def __init__(self, exp):
+        self.argument = exp
+
+class FunctionDefinition:
+    def __init__(self, identifier, arguments, body):
+        self.identifier = identifier
+        self.arguments = arguments
+        self.body = body
+
+class Identifiers:
+    def __init__(self):
+        self.children = []
+
+class FunctionCall:
+    def __init__(self, identifier, arguments):
+        self.identifier = identifier
+        self.arguments = arguments
+
 class Epsilon:
     pass

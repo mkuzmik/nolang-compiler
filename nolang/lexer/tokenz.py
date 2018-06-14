@@ -42,5 +42,7 @@ class TokenType(Enum):
     VARIABLE = 'variable'
     WHILE = 'while loop'
     IF = 'if statement'
+    RETURN = 'return statement'
 
     END_OF_STATEMENT = 'end of statement'
+    COMMA = ','
