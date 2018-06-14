@@ -1,6 +1,7 @@
 from nolang.parser.ast import *
 from nolang.lexer.tokenz import *
 
+
 class Parser:
 
     def __init__(self, tokens):
@@ -13,14 +14,16 @@ class Parser:
         self.current_token = self.tokens[self.current]
         return self.current_token
 
-    def error(self):
-        raise Exception('Invalid syntax')
+    def error(self, expected_token_type):
+        line = self.current_token.line
+        column = self.current_token.line
+        raise Exception("PARSER ERROR: Expected: " + str(expected_token_type) + ", but found: " + str(self.current_token.value) + " at line " + str(line) + " column " + str(column))
 
     def eat(self, token_type):
         if self.current_token.type == token_type:
             self.current_token = self.next_token()
         else:
-            self.error()
+            self.error(token_type)
 
     def factor(self):
         token = self.current_token

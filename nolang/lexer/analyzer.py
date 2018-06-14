@@ -44,7 +44,7 @@ class Analyzer:
             self.column += 1
             return self.next_token()
 
-        return Token(TokenType.UNKNOWN, '', self.line, self.position)
+        raise Exception("LEXER ERROR: Unrecognized token at line " + str(self.line + 1) + " ,column: " + str(self.column + 1))
 
     def recognize_string(self):
         position = self.position + 1
