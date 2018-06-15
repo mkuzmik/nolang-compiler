@@ -1,0 +1,10 @@
+{
+    function factorial(a) {
+        if (a<2) {
+            return a;
+        }
+        return a*factorial(a-1);
+    }
+
+    print factorial(4);
+}
