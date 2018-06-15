@@ -162,6 +162,7 @@ class Parser:
                 self.eat(TokenType.COMMA)
             else:
                 return identifiers
+        return identifiers
 
     def return_statement(self):
         '''
@@ -256,12 +257,12 @@ class Parser:
         '''
         FunctionCall -> identifier '(' ArgumentsList ')'
         '''
-        identifier = self.current_token
+        identifier = Identifier(self.current_token.value)
         self.eat(TokenType.IDENTIFIER)
         self.eat(TokenType.LPAREN)
         arguments = self.arguments_list()
         self.eat(TokenType.RPAREN)
-        return FunctionCall(identifier.value, arguments)
+        return FunctionCall(identifier, arguments)
 
     def arguments_list(self):
         '''
@@ -274,6 +275,7 @@ class Parser:
                 self.eat(TokenType.COMMA)
             else:
                 return assigns
+        return assigns
 
     def boolean(self):
         token = self.current_token
